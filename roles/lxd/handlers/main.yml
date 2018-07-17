@@ -1,0 +1,6 @@
+---
+
+- name: 'restart bridge service'
+  service:
+    name: '{{ lxd.services.bridge }}'
+    state: restarted

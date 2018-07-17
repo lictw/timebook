@@ -7,7 +7,6 @@ provisioner:
   name: ansible_playbook
   playbook: deploy.yml
   hosts: hosts
-  roles_path: roles
   ansible_verbose: true
   require_chef_for_busser: false
 

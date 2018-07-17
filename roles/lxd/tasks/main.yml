@@ -4,4 +4,21 @@
   apt:
     name: '{{ item }}'
     state: latest
-  with_items: "{{ lxd.packages }}"
+  with_items: '{{ lxd.packages }}'
+
+- name: 'manage bridge configuration'
+  template:
+    src: 'etc/default/lxd-bridge'
+    dest: '/etc/default/lxd-bridge'
+  notify:
+    - 'restart bridge service'
+
+- name: 'check pool status'
+  shell: 'zfs list {{ lxd.pool.name }}'
+  register: cmd
+  failed_when: no
+  changed_when: no
+
+- name: 'initialize lxd'
+  shell: 'lxd init --auto --storage-backend=zfs --storage-pool={{ lxd.pool.name }} --storage-create-loop={{ lxd.pool.size }}'
+  when: 'cmd.rc != 0'

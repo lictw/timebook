@@ -1,5 +1,15 @@
 ---
 
 lxd:
+  services:
+    bridge: 'lxd-bridge'
   packages:
     - 'lxd'
+    - 'zfsutils-linux'
+  network:
+    bridge: 'lxdbr0'
+    domain: 'lxd'
+    base: '10.10.100' # base address without latest octet, network will be {{ base }}.0/24
+  pool:
+    name: 'lxd'
+    size: 16
