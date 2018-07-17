@@ -1,0 +1,5 @@
+---
+
+mysqld:
+  packages:
+    - 'mysql-server'

@@ -1,1 +1,7 @@
+# Ansible inventory file:
+
+localhost ansible_connection=local
+mysql-server ansible_connection=lxd
+
+[target]
 localhost

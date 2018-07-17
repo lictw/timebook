@@ -6,7 +6,7 @@ driver:
 provisioner:
   name: ansible_playbook
   playbook: deploy.yml
-  hosts: hosts
+  ansible_inventory: hosts
   ansible_verbose: true
   require_chef_for_busser: false
 

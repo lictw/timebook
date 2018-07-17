@@ -1,7 +1,37 @@
 ---
 
-- name: "deploy"
-  hosts: all
+- name: 'manage lxd installation and mysql-server container'
+  hosts:
+    - 'target'
   gather_facts: no
   roles:
     - lxd
+  tasks:
+    - name: 'manage mysql-server container'
+      lxd_container:
+        name: mysql-server
+        state: started
+        source:
+          type: image
+          mode: pull
+          server: https://images.linuxcontainers.org
+          protocol: lxd
+          alias: ubuntu/xenial/amd64
+        profiles: ["default"]
+        timeout: 60
+        wait_for_ipv4_addresses: true
+
+- name: 'manage mysql-server installation'
+  hosts: mysql-server
+  gather_facts: no
+  roles:
+    - mysqld
+  pre_tasks:
+    - name: 'check python'
+      raw: 'dpkg -s python'
+      register: cmd
+      failed_when: no
+      changed_when: no
+    - name: 'install python'
+      raw: apt-get install -y python
+      when: cmd.rc == 1

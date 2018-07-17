@@ -1,6 +1,6 @@
 ---
 
-- name: 'install packages'
+- name: 'manage packages'
   apt:
     name: '{{ item }}'
     state: latest
@@ -19,6 +19,6 @@
   failed_when: no
   changed_when: no
 
-- name: 'initialize lxd'
+- name: 'manage lxd initialization'
   shell: 'lxd init --auto --storage-backend=zfs --storage-pool={{ lxd.pool.name }} --storage-create-loop={{ lxd.pool.size }}'
   when: 'cmd.rc != 0'
