@@ -1,0 +1,24 @@
+---
+
+- name: 'manage dependencies installation'
+  apt:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ docker.dependencies }}'
+
+- name: 'manage docker repository key'
+  apt_key:
+    id: '{{ docker.repository.key.id }}'
+    url: '{{ docker.repository.key.url }}'
+    state: present
+
+- name: 'manage docker repository'
+  apt_repository:
+    repo: 'deb [arch=amd64] {{ docker.repository.url }} {{ ansible_distribution_release }} stable'
+    state: present
+
+- name: 'manage docker installation'
+  apt:
+    name: '{{ docker.package }}'
+    state: present
+    update_cache: yes

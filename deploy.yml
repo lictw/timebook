@@ -1,8 +1,7 @@
 ---
 
 - name: 'manage lxd installation and mysql-server container'
-  hosts:
-    - 'target'
+  hosts: 'target'
   gather_facts: no
   roles:
     - lxd
@@ -17,12 +16,11 @@
           server: https://images.linuxcontainers.org
           protocol: lxd
           alias: ubuntu/xenial/amd64
-        profiles: ["default"]
         timeout: 60
         wait_for_ipv4_addresses: true
 
 - name: 'manage mysql-server installation'
-  hosts: mysql-server
+  hosts: 'mysql-server'
   gather_facts: no
   roles:
     - mysqld
@@ -35,3 +33,8 @@
     - name: 'install python'
       raw: apt-get install -y python
       when: cmd.rc == 1
+
+- name: 'manage docker installation'
+  hosts: 'target'
+  roles:
+    - docker

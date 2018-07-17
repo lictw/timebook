@@ -1,0 +1,15 @@
+---
+
+docker:
+  repository:
+    url: 'https://download.docker.com/linux/ubuntu'
+    key:
+      id: '9DC858229FC7DD38854AE2D88D81803C0EBFCD88'
+      url: 'https://download.docker.com/linux/ubuntu/gpg'
+  service: 'docker'
+  dependencies:
+    - 'apt-transport-https'
+    - 'ca-certificates'
+    - 'curl'
+    - 'software-properties-common'
+  package: 'docker-ce'
