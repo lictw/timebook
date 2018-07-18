@@ -9,3 +9,6 @@ project:
     database: 'forge'
     username: 'forge'
     password: ''
+  domain: 'test.timebook.local'
+  application:
+    prefix: '/application'

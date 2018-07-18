@@ -1,0 +1,19 @@
+---
+
+base: '/etc/nginx'
+
+nginx:
+  config:
+    user: 'www-data'
+    options:
+      'sendfile': 'on'
+      'tcp_nopush': 'on'
+      'tcp_nodelay': 'on'
+      'keepalive_timeout': '65'
+      'types_hash_max_size': '2048'
+  directories:
+    base: '{{ base }}'
+    logs: '/var/log/nginx'
+    sites: '{{ base }}/site.d'
+    trash: '{{ base }}/trash.d'
+    configs: '{{ base }}/conf.d'

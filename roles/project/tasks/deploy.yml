@@ -31,8 +31,27 @@
     image: 'application'
     state: started
     recreate: "{{ 'yes' if task.changed else 'no' }}"
+    command: 'php artisan migrate'
     env:
       DB_HOST: '{{ project.mysql.host }}'
       DB_DATABASE: '{{ project.mysql.database }}'
       DB_USERNAME: '{{ project.mysql.username }}'
       DB_PASSWORD: '{{ project.mysql.password }}'
+  register: container
+
+- name: 'internal configuration'
+  set_fact:
+    application: '{{ container.ansible_facts.docker_container.NetworkSettings.Networks.bridge.IPAddress }}'
+
+- name: 'manage nginx'
+  import_role:
+    name: 'nginx'
+
+- name: 'include nginx defaults' # waiting for 2.7 - https://github.com/ansible/ansible/pull/41330
+  include_vars: 'roles/nginx/defaults/main.yml'
+
+- name: 'manage nginx site'
+  template:
+    src: 'test.timebook.local'
+    dest: '{{ nginx.directories.sites }}/test.timebook.local'
+  notify: 'reload nginx'

@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+
+{%- set dirs = nginx.directories %}
+
+server {
+
+  listen 80 default_server;
+  server_name {{ project.domain }};
+  index index.php;
+
+  access_log {{ dirs.logs }}/{{ project.domain }}.access.log;
+  error_log {{ dirs.logs }}/{{ project.domain }}.error.log;
+
+  location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+  }
+
+  location ~ \.php$ {
+    include {{ dirs.base }}/fastcgi_params;
+    fastcgi_pass {{ application }}:9000;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME {{ project.application.prefix }}/public/index.php;
+  }
+}

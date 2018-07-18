@@ -1,0 +1,30 @@
+---
+
+- name: 'manage nginx'
+  apt:
+    name: 'nginx'
+    state: present
+
+- name: 'manage directories'
+  file:
+    path: '{{ item.value }}'
+    state: directory
+  with_dict: "{{ nginx.directories }}"
+
+- name: 'manage templates'
+  template:
+    src: '{{ item }}'
+    dest: '/{{ item }}'
+  notify: 'reload nginx'
+  with_items:
+    - 'etc/nginx/nginx.conf'
+    - 'etc/nginx/fastcgi_params'
+    - 'etc/nginx/proxy_params'
+
+- name: 'manage directories to delete'
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '{{ base }}/sites-enabled'
+    - '{{ base }}/sites-available'
