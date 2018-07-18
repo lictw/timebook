@@ -1,7 +1,37 @@
 ---
 
-- name: 'install packages'
+- name: 'manage packages'
   apt:
     name: '{{ item }}'
     state: latest
   with_items: '{{ mysqld.packages }}'
+
+- name: 'manage pip packages'
+  include_role:
+    name: 'pip'
+  vars:
+    packages:
+      - 'MySQL-python '
+
+- name: 'manage mysql config'
+  template:
+    src: 'etc/mysql/mysql.conf.d/mysqld.cnf'
+    dest: '/etc/mysql/mysql.conf.d/mysqld.cnf'
+  notify: 'restart mysqld'
+
+- name: 'manage databases'
+  mysql_db:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ mysqld.databases }}'
+  when: 'mysqld.databases is defined'
+
+- name: 'manage users'
+  mysql_user:
+    name: '{{ item.name }}'
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password | default('') }}"
+    priv: "{{ item.database | default('') }}.*:{{ item.privileges | default('ALL') }}"
+    state: present
+  with_items: '{{ mysqld.users }}'
+  when: 'mysqld.users is defined'

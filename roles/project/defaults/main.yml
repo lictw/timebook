@@ -4,9 +4,6 @@ project:
   repository: 'https://github.com/lictw/simple-app'
   packages:
     - 'git'
-    - 'python-pip'
-  pip:
-    - 'docker'
   mysql:
     host: '127.0.0.1'
     database: 'forge'

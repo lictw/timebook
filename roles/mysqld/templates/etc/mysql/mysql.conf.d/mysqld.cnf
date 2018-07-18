@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+{%- for section in mysqld.config %}
+[{{ section }}]
+  {%- for key, value in section.iteritems() %}
+    {%- if value != '' %}
+{{ key }} = {{ value }}
+    {%- else %}
+{{ key }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}

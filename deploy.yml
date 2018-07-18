@@ -26,6 +26,14 @@
 - name: 'manage mysql-server installation'
   hosts: 'mysql-server'
   gather_facts: no
+  vars:
+    mysqld:
+      databases:
+        - 'laravel'
+      users:
+        - name: 'laravel'
+          host: '%'
+          database: 'laravel'
   roles:
     - mysqld
   pre_tasks:
@@ -47,5 +55,7 @@
         project:
           mysql:
             host: '{{ mysql }}'
+            username: 'laravel'
+            database: 'laravel'
       tags:
         - deploy

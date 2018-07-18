@@ -7,9 +7,11 @@
   with_items: '{{ project.packages }}'
 
 - name: 'manage pip packages'
-  pip:
-    name: '{{ item }}'
-  with_items: '{{ project.pip }}'
+  include_role:
+    name: 'pip'
+  vars:
+    packages:
+      - 'docker'
 
 - name: 'manage local repository'
   git:
