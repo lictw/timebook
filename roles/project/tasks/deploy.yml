@@ -1,0 +1,33 @@
+---
+
+- name: 'manage packages'
+  apt:
+    name: '{{ item }}'
+    state: latest
+  with_items: '{{ project.packages }}'
+
+- name: 'manage pip packages'
+  pip:
+    name: '{{ item }}'
+  with_items: '{{ project.pip }}'
+
+- name: 'manage local repository'
+  git:
+    repo: '{{ project.repository }}'
+    dest: '/tmp/project'
+    force: yes
+
+- name: 'manage project docker image'
+  docker_image:
+     path: '/tmp/project'
+     name: application
+  register: task
+
+- name: 'manage project docker container'
+  docker_container:
+    name: 'laravel-application'
+    image: 'application'
+    state: started
+    recreate: "{{ 'yes' if task.changed else 'no' }}"
+    env:
+      DB_HOST: '{{ project.mysql.host }}'

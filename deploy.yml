@@ -18,6 +18,10 @@
           alias: ubuntu/xenial/amd64
         timeout: 60
         wait_for_ipv4_addresses: true
+      register: container
+    - name: 'internal configuration'
+      set_fact:
+        mysql: "{{ container.addresses.eth0 | first }}"
 
 - name: 'manage mysql-server installation'
   hosts: 'mysql-server'
@@ -34,7 +38,14 @@
       raw: apt-get install -y python
       when: cmd.rc == 1
 
-- name: 'manage docker installation'
+- name: 'manage docker and project installation'
   hosts: 'target'
   roles:
     - docker
+    - role: project
+      vars:
+        project:
+          mysql:
+            host: '{{ mysql }}'
+      tags:
+        - deploy
