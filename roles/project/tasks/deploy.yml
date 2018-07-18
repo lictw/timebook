@@ -31,13 +31,16 @@
     image: 'application'
     state: started
     recreate: "{{ 'yes' if task.changed else 'no' }}"
-    command: 'php artisan migrate'
     env:
       DB_HOST: '{{ project.mysql.host }}'
       DB_DATABASE: '{{ project.mysql.database }}'
       DB_USERNAME: '{{ project.mysql.username }}'
       DB_PASSWORD: '{{ project.mysql.password }}'
   register: container
+
+- name: "apply application's migration"
+  shell: "docker exec laravel-application su -s /bin/bash -c 'php artisan migrate --force' www-data"
+  changed_when: no
 
 - name: 'internal configuration'
   set_fact:
